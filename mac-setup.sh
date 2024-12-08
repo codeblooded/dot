@@ -79,3 +79,8 @@ echo "> Setting up Python"
 LATEST_PYTHON="$(pyenv latest -k 3)"
 pyenv install "$LATEST_PYTHON"
 pyenv global "$LATEST_PYTHON"
+
+echo "> Adding preferred fonts"
+brew install --cask \
+  font-fira-code \
+  font-jetbrains-mono
