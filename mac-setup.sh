@@ -41,6 +41,7 @@ ln -s ~/dot/.zshrc ~/.zshrc
 echo "> Setting up Applications"
 brew install --cask \
     alfred \
+    chatgpt \
     google-chrome \
     google-cloud-sdk \
     iterm2 \
