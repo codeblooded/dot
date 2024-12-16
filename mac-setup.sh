@@ -70,6 +70,7 @@ git config --global tag.gpgsign true
 git config --global pull.rebase true
 git config --global init.defaultBranch main
 git config --global url.git@github.com:.insteadOf https://github.com/
+git config --global push.autoSetupRemote true
 
 echo "> Setting up GitHub, expect browser prompt"
 gh auth login
