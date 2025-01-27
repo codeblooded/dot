@@ -1,40 +1,34 @@
-# ============================================================================== #
-#                                Ben Reed's ZSHRC                                #
-# ============================================================================== #
+export ZSH="$HOME/.oh-my-zsh"
 
-# Keybindings
-bindkey -e
+ZSH_THEME="af-magic"
 
-# History
-HISTFILE=~/.histfile
-HISTSIZE=1000
-SAVEHIST=10000
-setopt HIST_IGNORE_ALL_DUPS
-setopt SHARE_HISTORY
-setopt INC_APPEND_HISTORY
+zstyle ':omz:update' mode auto      # update automatically without asking
+zstyle ':omz:update' frequency 14
 
-# Disable beeps
-unsetopt BEEP
+PYTHON_AUTO_VRUN=true  # auto-activate Python venvs
 
-# Prompt
-autoload -U promptinit && promptinit
-prompt adam1
+plugins=(fzf git docker brew golang python gcloud gh kubectl macos zsh-autosuggestions zsh-syntax-highlighting)
 
-# Editor
-export EDITOR=$(which nvim)
-export VISUAL=$EDITOR
-alias vi='nvim'
-alias vim='nvim'
-
-# fzf integration
-source <(fzf --zsh)
-
-# zsh completions
 if type brew &>/dev/null; then
   FPATH=$(brew --prefix)/share/zsh-completions:$FPATH
-  autoload -Uz compinit
-  compinit
 fi
+
+source $ZSH/oh-my-zsh.sh
+
+export LANG=en_US.UTF-8
+
+if [[ -n $SSH_CONNECTION ]]; then
+   export EDITOR='vim'
+else
+   export EDITOR='nvim'
+fi
+alias vi=$EDITOR
+
+# Compilation flags
+export ARCHFLAGS="-arch $(uname -m)"
+
+# Terminal flags
+unsetopt BEEP
 
 # Go
 export GOPATH="$HOME/go"
@@ -45,38 +39,21 @@ export PYENV_ROOT="$HOME/.pyenv"
 [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
 eval "$(pyenv init -)"
 
-# Python venv auto-activation
-function auto_activate_venv() {
-  if [[ -f "./.venv/bin/activate" ]]; then
-    RPROMPT="%F{green}(venv)%f"
-    source ./.venv/bin/activate
-  elif [[ -n "$VIRTUAL_ENV" ]]; then
-    deactivate
-  fi
-}
-autoload -U add-zsh-hook
-add-zsh-hook chpwd auto_activate_venv
-auto_activate_venv
-
 # File management
 alias ll="ls -al"
-mkcd() { mkdir -p "$1" && cd "$1" }
+function mkcd { mkdir -p "$1" && cd "$1" }
+
+# Process management
+alias ports="lsof -i -P -n"
+alias iplocal="ipconfig getifaddr en0"
+
+# PostgreSQL
+export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
 
 # Session management
 alias tx="tmux"
 alias txs="$tx new-session -A -t ${1:-"b"}"
 alias xx="clear"
 
-# Process management
-alias ports="lsof -i -P -n"
-alias iplocal="ipconfig getifaddr en0"
-
-# Bazel
-if command -v bazel &> /dev/null; then
-  alias b="bazel"
-  alias bb="$b build"
-  alias bt="$b test"
-  alias br="$b run"
-  alias bcl="$b clean"
-  alias bqq="$b query"
-fi
+# iTerm2 shell integration
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
